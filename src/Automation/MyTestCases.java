@@ -29,7 +29,7 @@ public class MyTestCases extends MyData{
 	String MyWebSite = "https://automationteststore.com/";
 	
 	String SignUpPage = "https://automationteststore.com/index.php?rt=account/create";
-	
+	driver.driver.driver
 	
 	@BeforeTest
 	public void MySetup() {
