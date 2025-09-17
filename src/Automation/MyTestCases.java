@@ -6,6 +6,7 @@ import static org.testng.Assert.assertEquals;
 
 import java.time.Duration;
 import java.util.List;
+import java.util.Random;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -131,11 +132,34 @@ public class MyTestCases extends MyData{
 	
 	@Test(priority = 4, enabled = true)
 	public void AddItemsToTheCart() {
-		driver.navigate().to(MyWebSite);
-		List<WebElement> AllProductItems = driver.findElements(By.className("prdocutname"));
-		int RandomIndexForTheItems = rand.nextInt(AllProductItems.size());
-		AllProductItems.get(RandomIndexForTheItems).click();
-	}
+		
+		Random rand = new Random();
+
+	    for (int i = 0; i < 10; i++) { // max 10 attempts here we can increase momkin 16 
+	        // pick a random item and open it
+	        List<WebElement> items = driver.findElements(By.className("prdocutname"));
+	        int randomItem = rand.nextInt(items.size());
+	        items.get(randomItem).click();
+
+	        // check availability
+	        boolean outOfStock = driver.getPageSource().contains("Out of Stock"); // true
+	        boolean blockedProduct = driver.getCurrentUrl().contains("product_id=116");//false
+
+	        if (!outOfStock && !blockedProduct) {
+	            driver.findElement(By.cssSelector(".cart")).click();
+	            System.out.println("Added to cart: " + driver.getCurrentUrl());
+	            return; // success
+	        }
+
+	        driver.navigate().back(); // try again
+	    }
+	    
+	    throw new RuntimeException("No in-stock item found after 10 attempts.");
+
+		}
+		
+		
+
 	
 	
 	@AfterTest
